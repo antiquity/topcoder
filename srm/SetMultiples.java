@@ -5,59 +5,36 @@ import java.math.*;
 import java.awt.geom.*;
 import java.util.*;
 
-public class PilingRectsDiv2 {
-    public int getmax(int[] X, int[] Y, int limit) {
-        int x=1,y;
-        int ret=-1;
-        int t=0;
-        for(x=1; x<=Math.ceil(Math.sqrt(limit)); x++){
-            if(limit%x==0) y=limit/x;
-            else y=limit/x+1;
-            t=0;
-            for(int j=0; j<X.length; j++){
-                if((x<=X[j] && y<=Y[j]) || (x<=Y[j] && y<=X[j]))
-                    t++;
-            }
-            if(t>ret) ret=t;
-        }
-        if(ret==0) return -1;
-        return ret;
+public class SetMultiples {
+    public long smallestSubset(long A, long B, long C, long D) {
+
     }
 // BEGIN CUT HERE
-
-// -- Begin Cutting Here of the Main Method $&%*@# --
+/** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new PilingRectsDiv2().runTestCase(0);
-		new PilingRectsDiv2().runTestCase(1);
-		new PilingRectsDiv2().runTestCase(2);
-		new PilingRectsDiv2().runTestCase(3);
-		new PilingRectsDiv2().runTestCase(4);
-		new PilingRectsDiv2().runTestCase(5);
-		new PilingRectsDiv2().runTestCase(6);
+		new SetMultiples().runTestCase(0);
+		new SetMultiples().runTestCase(1);
+		new SetMultiples().runTestCase(2);
+		new SetMultiples().runTestCase(3);
+		new SetMultiples().runTestCase(4);
 	}
 
 	public void runTestCase(int nbr) {
 		switch(nbr) {
 			case 0 : {
-				checkOutput(getmax(new int[] {1,2,3,1}, new int[] {3,2,4,4}, 3), 3, 0); break;
+				checkOutput(smallestSubset(1, 1, 2, 2), 1, 0); break;
 			}
 			case 1 : {
-				checkOutput(getmax(new int[] {4,7}, new int[] {7,4}, 25), 2, 1); break;
+				checkOutput(smallestSubset(1, 2, 3, 4), 2, 1); break;
 			}
 			case 2 : {
-				checkOutput(getmax(new int[] {10}, new int[] {10}, 9999), -1, 2); break;
+				checkOutput(smallestSubset(2, 3, 5, 7), 3, 2); break;
 			}
 			case 3 : {
-				checkOutput(getmax(new int[] {10}, new int[] {3}, 30), 1, 3); break;
+				checkOutput(smallestSubset(1, 10, 100, 1000), 500, 3); break;
 			}
 			case 4 : {
-				checkOutput(getmax(new int[] {3,6,5,8,2,9,14}, new int[] {14,6,13,8,15,6,3}, 27), 4, 4); break;
-			}
-			case 5 : {
-				checkOutput(getmax(new int[] {121,168,86,106,36,10,125,97,53,26,148,129,41,18,173,55,13,73,91,174,177,190,28,164,122,92,5,26,58,188,14,67,48,196,41,94,24,89,54,117,12,6,155,103,200,128,184,29,92,149}, new int[] {199,182,43,191,2,145,15,53,38,37,61,45,157,129,119,123,177,178,183,188,132,108,112,137,92,59,75,196,102,152,114,121,181,93,32,3,24,116,4,163,96,159,196,43,59,150,79,113,20,146}, 5345), 24, 5); break;
-			}
-			case 6 : {
-				checkOutput(getmax(new int[] {1, 2}, new int[] {1,2}, 3), 1, 6); break;
+				checkOutput(smallestSubset(1000000000, 2000000000, 9000000000L, 10000000000L), 1254365078, 4); break;
 			}
 		}
 	}
@@ -92,7 +69,7 @@ public class PilingRectsDiv2 {
 		System.out.println(out);
 	}
 	final void checkOutput(double mine, double them, int nbr) {
-		boolean success = (mine==them);
+		boolean success = doubleCompare(mine, them);
 		StringBuffer out = new StringBuffer();
 		out.append("Example ");
 		out.append((nbr+1));
@@ -105,6 +82,28 @@ public class PilingRectsDiv2 {
 			out.append(them);
 		}
 		System.out.println(out);
+	}
+	private static boolean doubleCompare(double expected, double result){
+		double MAX_DOUBLE_ERROR = 1E-9;
+		if(Double.isNaN(expected)){
+			return Double.isNaN(result);
+		}else if(Double.isInfinite(expected)){
+			if(expected > 0){
+				return result > 0 && Double.isInfinite(result);
+			}else{
+				return result < 0 && Double.isInfinite(result);
+			}
+		}else if(Double.isNaN(result) || Double.isInfinite(result)){
+			return false;
+		}else if(Math.abs(result - expected) < MAX_DOUBLE_ERROR){
+			return true;
+		}else{
+			double min = Math.min(expected * (1.0 - MAX_DOUBLE_ERROR),
+				expected * (1.0 + MAX_DOUBLE_ERROR));
+			double max = Math.max(expected * (1.0 - MAX_DOUBLE_ERROR),
+					expected * (1.0 + MAX_DOUBLE_ERROR));
+			return result > min && result < max;
+		}
 	}
 	final void checkOutput(char mine, char them, int nbr) {
 		boolean success = (mine==them);
@@ -270,7 +269,6 @@ public class PilingRectsDiv2 {
 		System.out.println(out);
 	}
 
-// -- End Cutting Here of the Main Method $&%*@# --
-
+/** end cut - don't modify this line*/
 // END CUT HERE
 }

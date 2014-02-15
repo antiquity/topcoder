@@ -5,59 +5,52 @@ import java.math.*;
 import java.awt.geom.*;
 import java.util.*;
 
-public class PilingRectsDiv2 {
-    public int getmax(int[] X, int[] Y, int limit) {
-        int x=1,y;
-        int ret=-1;
-        int t=0;
-        for(x=1; x<=Math.ceil(Math.sqrt(limit)); x++){
-            if(limit%x==0) y=limit/x;
-            else y=limit/x+1;
-            t=0;
-            for(int j=0; j<X.length; j++){
-                if((x<=X[j] && y<=Y[j]) || (x<=Y[j] && y<=X[j]))
-                    t++;
-            }
-            if(t>ret) ret=t;
-        }
-        if(ret==0) return -1;
-        return ret;
+public class LotteryTree {
+    public String isFairTree(int[] tree, int P) {
+
     }
 // BEGIN CUT HERE
-
-// -- Begin Cutting Here of the Main Method $&%*@# --
+/** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new PilingRectsDiv2().runTestCase(0);
-		new PilingRectsDiv2().runTestCase(1);
-		new PilingRectsDiv2().runTestCase(2);
-		new PilingRectsDiv2().runTestCase(3);
-		new PilingRectsDiv2().runTestCase(4);
-		new PilingRectsDiv2().runTestCase(5);
-		new PilingRectsDiv2().runTestCase(6);
+		new LotteryTree().runTestCase(0);
+		new LotteryTree().runTestCase(1);
+		new LotteryTree().runTestCase(2);
+		new LotteryTree().runTestCase(3);
+		new LotteryTree().runTestCase(4);
+		new LotteryTree().runTestCase(5);
+		new LotteryTree().runTestCase(6);
+		new LotteryTree().runTestCase(7);
+		new LotteryTree().runTestCase(8);
 	}
 
 	public void runTestCase(int nbr) {
 		switch(nbr) {
 			case 0 : {
-				checkOutput(getmax(new int[] {1,2,3,1}, new int[] {3,2,4,4}, 3), 3, 0); break;
+				checkOutput(isFairTree(new int[] {0, 0, 0}, 3), "YES", 0); break;
 			}
 			case 1 : {
-				checkOutput(getmax(new int[] {4,7}, new int[] {7,4}, 25), 2, 1); break;
+				checkOutput(isFairTree(new int[] {0, 0, 0, 1, 1, 2, 2, 3, 3}, 2), "YES", 1); break;
 			}
 			case 2 : {
-				checkOutput(getmax(new int[] {10}, new int[] {10}, 9999), -1, 2); break;
+				checkOutput(isFairTree(new int[] {0, 0, 1, 1, 2, 2, 4, 4, 4}, 3), "NO", 2); break;
 			}
 			case 3 : {
-				checkOutput(getmax(new int[] {10}, new int[] {3}, 30), 1, 3); break;
+				checkOutput(isFairTree(new int[] {0, 0, 1, 1, 1, 3, 3, 3}, 3), "NO", 3); break;
 			}
 			case 4 : {
-				checkOutput(getmax(new int[] {3,6,5,8,2,9,14}, new int[] {14,6,13,8,15,6,3}, 27), 4, 4); break;
+				checkOutput(isFairTree(new int[] {0, 0, 0, 3, 0, 0, 3, 6, 3, 1, 0, 2, 0, 4, 6, 15, 1, 15, 11, 11, 1, 4, 11, 2, 11, 2, 6} , 6), "YES", 4); break;
 			}
 			case 5 : {
-				checkOutput(getmax(new int[] {121,168,86,106,36,10,125,97,53,26,148,129,41,18,173,55,13,73,91,174,177,190,28,164,122,92,5,26,58,188,14,67,48,196,41,94,24,89,54,117,12,6,155,103,200,128,184,29,92,149}, new int[] {199,182,43,191,2,145,15,53,38,37,61,45,157,129,119,123,177,178,183,188,132,108,112,137,92,59,75,196,102,152,114,121,181,93,32,3,24,116,4,163,96,159,196,43,59,150,79,113,20,146}, 5345), 24, 5); break;
+				checkOutput(isFairTree(new int[] {0, 1, 2, 3, 1, 1, 4, 4, 0, 1, 6, 9, 1, 12, 9, 2, 4, 8, 6, 13, 8, 5, 11, 12, 17,   19, 13, 9, 3, 24, 30, 29, 28, 28, 11, 27, 2, 26, 6, 14, 8, 26, 15, 25, 33, 38,   1, 24, 15, 43, 3, 39, 26, 8, 13, 50, 28, 8, 6, 27, 8, 38, 27, 50, 17, 50, 25,   40, 7, 29, 22, 40, 2, 24, 22, 30, 33, 40, 19, 14, 26, 39, 5, 43, 7, 4}, 9), "NO", 5); break;
 			}
 			case 6 : {
-				checkOutput(getmax(new int[] {1, 2}, new int[] {1,2}, 3), 1, 6); break;
+				checkOutput(isFairTree(new int[] {0, 1, 0, 0, 4, 0, 2, 2, 0, 2, 6, 1, 3, 6, 5, 9, 11, 13, 1, 10, 14, 4, 7, 21,  16, 8, 25, 4, 5, 22, 25, 14, 12, 11, 12, 26, 21, 8, 2, 38, 3, 5, 4, 38, 27,   35, 38, 30, 38, 9, 16, 36, 6, 10, 7, 27, 30, 33, 17, 26, 17, 10, 35, 10, 38,  41, 15, 9, 3, 27, 8, 15, 38, 22, 41, 33, 33, 36, 30, 13, 18, 22, 18}, 12), "YES", 6); break;
+			}
+			case 7 : {
+				checkOutput(isFairTree(new int[] {0, 0, 2, 3, 4, 3, 2, 1, 8, 6, 8, 8, 2, 7, 14, 2, 8, 1, 11, 11, 12, 16, 12,   19, 20, 13, 7, 12, 26, 11, 18, 19, 18, 20, 4, 9, 1, 1, 6, 16, 1, 35, 27, 24,  37, 30, 36, 41, 32, 36, 8, 2, 6, 14, 41, 1, 35, 6, 30, 16, 12, 2, 35, 25, 50,  13, 1, 24, 8, 32, 26, 50, 9, 19, 9, 20, 26, 27, 6, 12, 25, 9, 37, 37, 9} , 7), "NO", 7); break;
+			}
+			case 8 : {
+				checkOutput(isFairTree(new int[] {0, 0, 1, 0, 2, 3, 0, 0, 8, 5, 7, 5, 2, 12, 12, 14, 14, 13, 8, 2, 1, 7, 18,  16, 8, 24, 18, 2, 24, 3, 11, 5, 24, 4, 34, 6, 31, 13, 38, 19, 4, 3, 22, 3,  11, 12, 21, 34, 41, 8, 19, 4, 13, 29, 33, 8, 14, 50, 18, 45, 16, 50, 44, 50,  38, 5, 43, 31, 29, 7, 6, 45, 38, 4, 19, 41, 50, 21, 44, 41, 43, 22, 33, 6, 8} , 12), "YES", 8); break;
 			}
 		}
 	}
@@ -92,7 +85,7 @@ public class PilingRectsDiv2 {
 		System.out.println(out);
 	}
 	final void checkOutput(double mine, double them, int nbr) {
-		boolean success = (mine==them);
+		boolean success = doubleCompare(mine, them);
 		StringBuffer out = new StringBuffer();
 		out.append("Example ");
 		out.append((nbr+1));
@@ -105,6 +98,28 @@ public class PilingRectsDiv2 {
 			out.append(them);
 		}
 		System.out.println(out);
+	}
+	private static boolean doubleCompare(double expected, double result){
+		double MAX_DOUBLE_ERROR = 1E-9;
+		if(Double.isNaN(expected)){
+			return Double.isNaN(result);
+		}else if(Double.isInfinite(expected)){
+			if(expected > 0){
+				return result > 0 && Double.isInfinite(result);
+			}else{
+				return result < 0 && Double.isInfinite(result);
+			}
+		}else if(Double.isNaN(result) || Double.isInfinite(result)){
+			return false;
+		}else if(Math.abs(result - expected) < MAX_DOUBLE_ERROR){
+			return true;
+		}else{
+			double min = Math.min(expected * (1.0 - MAX_DOUBLE_ERROR),
+				expected * (1.0 + MAX_DOUBLE_ERROR));
+			double max = Math.max(expected * (1.0 - MAX_DOUBLE_ERROR),
+					expected * (1.0 + MAX_DOUBLE_ERROR));
+			return result > min && result < max;
+		}
 	}
 	final void checkOutput(char mine, char them, int nbr) {
 		boolean success = (mine==them);
@@ -270,7 +285,6 @@ public class PilingRectsDiv2 {
 		System.out.println(out);
 	}
 
-// -- End Cutting Here of the Main Method $&%*@# --
-
+/** end cut - don't modify this line*/
 // END CUT HERE
 }
