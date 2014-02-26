@@ -2,62 +2,94 @@ import java.util.*;
 
 public class MiningGoldEasy {
     public int GetMaximumGold(int N, int M, int[] ei, int[] ej) {
-        ArrayList<int[]> q = new ArrayList<int[]>();
-        ArrayList<Integer> v = new ArrayList<Integer>();
-        int[] t=new int[]{-1,0,0},temp;
-        int res=0,idx;
-        int iday,value;
-        int ret=Integer.MAX_VALUE;
-        q.add(new int[]{0,ei[0],ej[0]});
-        v.add(0);
-        while(!q.isEmpty()){
-            if(q.get(0)[0]!=t[0]){
-                for(int i=0; i<q.size(); i++){
-                    System.out.print(Arrays.toString(q.get(i)));
-                    System.out.print(v.get(i));
-                }
-                System.out.println();
-                //System.out.println(Arrays.toString(t));
-            }
-            t = q.remove(0);
-            res = v.remove(0);
-            iday = t[0];
-            if(iday==(ei.length-1)){
-                if(res<ret)
-                    ret=res;
-                continue;
-            }
+        N++; M++;
+        int D = ei.length;
+        int[][] dp = new int[N+M][D];
+        int temp;
 
-            temp =new int [] {iday+1,t[1],ej[iday+1]};
-            value = res+Math.abs(t[1]-ei[iday+1]);
-            if(q.contains(temp)){
-                idx = q.indexOf(temp);
-                if(v.get(idx)>value) v.set(idx,value);
-            }else{
-                q.add(temp);
-                v.add(value);
-            }
-            temp =new int[]{iday+1,ei[iday+1],t[2]};
-            value = res+Math.abs(t[2]-ej[iday+1]);
-            if(q.contains(temp)){
-                idx = q.indexOf(temp);
-                if(v.get(idx)>value) v.set(idx,value);
-            }else{
-                q.add(temp);
-                v.add(value);
-            }
+        int d=0;
+        System.out.format("day %d\n",d);
+        for(int i=0; i<N; i++){
+            dp[i][d]= Math.abs(i-ei[d]);
+            System.out.format("%3d",dp[i][d]);
         }
-        return (N+M)*ei.length-res;
+        System.out.format("  |");
+        for(int i=0; i<M; i++){
+            dp[i+N][d] = Math.abs(i-ej[d]);
+            System.out.format("%3d",dp[i+N][d]);
+        }
+        System.out.format("\n");
+        for(d=1; d<D; d++){
+            System.out.format("day %d\n",d);
+            for(int i=0; i<N; i++){
+                temp = Math.abs(i-ei[d]);
+                dp[i][d]=(M+N)*d;
+                if(i==ei[d-1]){
+                    for(int k=0; k<M; k++){
+                        if(dp[k+N][d-1]+temp<dp[i][d])
+                            dp[i][d]=dp[k+N][d-1]+temp;
+                        System.out.format("\n dp1[%d][%d]= %d\n",i,d,dp[i][d]);
+                    }
+                }else{
+                    if(dp[ej[d]+N][d-1]+temp<dp[i][d])
+                        dp[i][d]=dp[ej[d]+N][d-1]+temp;
+                    System.out.format("\n dp2[%d][%d]= %d\n",i,d,dp[i][d]);
+                }
+
+                if(ej[d]==ej[d-1]){
+                    for(int k=0; k<N; k++){
+                        if(dp[k][d-1]+temp<dp[i][d])
+                            dp[i][d]=dp[k][d-1]+temp;
+                        System.out.format("\n dp3[%d][%d]= %d\n",i,d,dp[i][d]);
+                    }
+                }else{
+                    if(dp[i][d-1]+temp<dp[i][d])
+                        dp[i][d]=dp[i][d-1]+temp;
+                    System.out.format("\n dp4[%d][%d]= %d\n",i,d,dp[i][d]);
+                }
+
+                System.out.format("%3d",dp[i][d]);
+            }
+            System.out.format("  |");
+            for(int i=0; i<M; i++){
+                temp = Math.abs(i-ej[d]);
+                dp[i+N][d]=(N+M)*d;
+                if(ei[d]==ei[d-1]){
+                    for(int k=0; k<M; k++)
+                        if(dp[k+N][d-1]+temp<dp[i+N][d])
+                            dp[i+N][d]=dp[k+N][d-1]+temp;
+                }else
+                    if(dp[i+N][d-1]+temp<dp[i+N][d])
+                        dp[i+N][d]=dp[i+N][d-1]+temp;
+
+                if(i==ej[d-1]){
+                    for(int k=0; k<N; k++)
+                        if(dp[k][d-1]+temp<dp[i+N][d])
+                            dp[i+N][d]=dp[k][d-1]+temp;
+                }else
+                    if(dp[ei[d]][d-1]+temp<dp[i+N][d])
+                        dp[i+N][d]=dp[ei[d]][d-1]+temp;
+
+                System.out.format("%3d",dp[i+N][d]);
+            }
+            System.out.format("\n");
+        }
+        temp = Integer.MAX_VALUE;
+        for(int i=0; i<dp.length; i++)
+            if(dp[i][D-1]<temp)
+                temp=dp[i][D-1];
+        return (N+M-2)*ei.length-temp;
     }
+
 // BEGIN CUT HERE
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
+		new MiningGoldEasy().runTestCase(3);
 		new MiningGoldEasy().runTestCase(0);
 		new MiningGoldEasy().runTestCase(1);
 		new MiningGoldEasy().runTestCase(2);
-		new MiningGoldEasy().runTestCase(3);
 		new MiningGoldEasy().runTestCase(4);
-		//new MiningGoldEasy().runTestCase(5);
+	new MiningGoldEasy().runTestCase(5);
 	}
 
 	public void runTestCase(int nbr) {
