@@ -6,7 +6,7 @@ import java.awt.geom.*;
 import java.util.*;
 
 public class TaroFriends {
-    public int getNumber(int[] co, int X) {
+    public int getNumber_1(int[] co, int X) {
         Arrays.sort(co);
         int N = co.length;
         int md = co[N-1]-co[0];
@@ -20,22 +20,36 @@ public class TaroFriends {
             for(int i=0; i<N; i++){
                 tl = co[i]-X;
                 tr = co[i]+X;
-                if(tr<l) l=tr;
-                else if(tr<=r)
+                if(tr<l){
+                    l=tr;
+                    System.out.print("1r");
+                }else if(tr<=r){
+                    System.out.print("2r");
                     continue;
-                else{
+                }else{
                     if(tl<l){
-                        if(l-tl<tr-r) l=tl;
-                        else if(l-tl==tr-r) rem.add(co[i]);
-                        else r=tr;
-                    }else if(tl<=r)
+                        if(l-tl<tr-r){
+                            System.out.print("1l");
+                            l=tl;
+                        }else if(l-tl==tr-r){
+                            System.out.print("o");
+                            rem.add(co[i]);
+                        }else{
+                            r=tr;
+                            System.out.print("3r");
+                        }
+                    }else if(tl<=r){
+                        System.out.print("2l");
                         continue;
-                    else
+                    }else{
+                        System.out.print("3l");
                         r=tl;
+                    }
                 }
             }
             oS=N;
             N=rem.size();
+            System.out.println(N);
             if(N>0){
                 co=new int[N];
                 for(int i=0; i<N; i++) co[i]=rem.get(i);
@@ -45,21 +59,39 @@ public class TaroFriends {
         if(N>0) r=co[0]+X;
         return r-l;
     }
+    public int getNumber(int[] co, int X) {
+        Arrays.sort(co);
+        System.out.println(Arrays.toString(co));
+        int res = co[co.length - 1] - co[0];
+        int ans=0;
+        for (int toRight = 0; toRight + 1 < co.length; ++toRight) {
+            int left = Math.min(co[0] + X, co[toRight + 1] - X);
+            int right = Math.max(co[toRight] + X, co[co.length - 1] - X);
+            if(right-left<=res){
+                res=right-left;
+                ans=toRight;
+            }
+            //res = Math.min(res, right - left);
+        }
+        System.out.println(ans);
+        return res;
+    }
 // BEGIN CUT HERE
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new TaroFriends().runTestCase(0);
-		new TaroFriends().runTestCase(1);
-		new TaroFriends().runTestCase(2);
-		new TaroFriends().runTestCase(3);
-		new TaroFriends().runTestCase(4);
-		new TaroFriends().runTestCase(5);
+		new TaroFriends().runTestCase(6);
+                //new TaroFriends().runTestCase(0);
+		//new TaroFriends().runTestCase(1);
+		//new TaroFriends().runTestCase(2);
+		//new TaroFriends().runTestCase(3);
+		//new TaroFriends().runTestCase(4);
+		//new TaroFriends().runTestCase(5);
 	}
 
 	public void runTestCase(int nbr) {
 		switch(nbr) {
 			case 0 : {
-				checkOutput(getNumber(new int[] {-3, 0, 1}, 3), 3, 0); break;
+				checkOutput(getNumber_1(new int[] {-3, 0, 1}, 3), 3, 0); break;
 			}
 			case 1 : {
 				checkOutput(getNumber(new int[] {4, 7, -7}, 5), 4, 1); break;
@@ -75,7 +107,12 @@ public class TaroFriends {
 			}
 			case 5 : {
 				checkOutput(getNumber(new int[] {7}, 0), 0, 5); break;
-			}
+                        }
+			case 6 : {
+				checkOutput(getNumber(new int[] {523, 740, -995, -723, 249, 309, 395, -385, 779, -842, 177, -150, 389, 409, 33, -98, 740, -452, 765, -650, 449, -219, -356, 513, 133, -761, 607, 560, -923, 810, -956, -92, -485, 211, 923, -124}, 818), 1471, 6);
+				checkOutput(getNumber_1(new int[] {523, 740, -995, -723, 249, 309, 395, -385, 779, -842, 177, -150, 389, 409, 33, -98, 740, -452, 765, -650, 449, -219, -356, 513, 133, -761, 607, 560, -923, 810, -956, -92, -485, 211, 923, -124}, 818), 1471, 6);
+                                break;
+                        }
 		}
 	}
 	final void checkOutput(int mine, int them, int nbr) {

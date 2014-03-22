@@ -1,10 +1,40 @@
 import java.util.*;
 
 public class PowersOfTwo {
-    int[] table = new int[51];
+    int[] table = new int[52];
+    public long count_1(long[] powers) {
+        ArrayList<Long> sPoswers = new ArrayList<Long>(powers.length);
+        for (long p : powers) sPoswers.add(p);
+        Collections.sort(sPoswers);
+        long max = 0;
+        HashSet<Long> current = new HashSet<Long>();
+        long total = 1;
+        current.add(0l);
+        Long last = null;
+        for (Long p : sPoswers) {
+            if (p != last && last != null && p > max) {
+                total *= current.size();
+                current = new HashSet<Long>();
+                current.add(0l);
+            }
+
+            HashSet<Long> newVals = new HashSet<Long>();
+            for (Long val : current)
+                newVals.add(val + p);
+            current.addAll(newVals);
+
+            max += p;
+            last = p;
+        }
+        total *= (current.size() != 0 ? current.size() : 1);
+        return total;
+    }
+
     public long count(long[] powers) {
+        //println("powers: " + Arrays.toString(powers));
         Arrays.fill(table,0);
-        int d;
+        int d=0;
+        long max=0;
         for(int i=0; i<powers.length; i++){
             d=0;
             while(powers[i]!=1){
@@ -13,27 +43,46 @@ public class PowersOfTwo {
             }
             table[d]++;
         }
-        println(Arrays.toString(table));
-        int i=0;
+        //println("table:  " + Arrays.toString(Arrays.copyOf(table,d+1)));
+        int i=0,j;
+        long ans=1;
+        HashSet<Long> set = new HashSet<Long>();
         while(i<table.length){
-            i++;
-
+            max=table[i]; j=i;
+            set.clear(); set.add(0l);
+            while((1l<<(j-i))<=max && j<table.length){
+                //System.out.format("(%d,%d): ",i,j);
+                //System.out.print(set);
+                HashSet<Long> temp=new HashSet<Long>();
+                for(long l:set)
+                    for(int k=1; k<=table[j]; k++)
+                        temp.add(l+k*(1l<<(j-i)));
+                set.addAll(temp);
+                //System.out.println(" -> " + set);
+                if(j>i) max=max+table[j]*(1l<<(j-i));
+                j++;
+            }
+            if(table[i]==0) j++;
+            ans*=set.size();
+            i=j;
         }
-        return 0;
-
-
+        return ans;
     }
+
 // BEGIN CUT HERE
     void println(Object o) { System.out.println(o); }
     void print (Object o) {System.out.print(o); }
     void println() {System.out.println(); }
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new PowersOfTwo().runTestCase(0);
-		new PowersOfTwo().runTestCase(1);
-		new PowersOfTwo().runTestCase(2);
-		new PowersOfTwo().runTestCase(3);
 		new PowersOfTwo().runTestCase(4);
+		//System.out.println(new PowersOfTwo().count_1(new long[]{1,1,1,1,1,2,2,2,2,2}));
+		//System.out.println(new PowersOfTwo().count(new long[]{1,1,1,1,1,2,2,2,2,2}));
+		//new PowersOfTwo().runTestCase(0);
+		//new PowersOfTwo().runTestCase(1);
+		//new PowersOfTwo().runTestCase(2);
+		//new PowersOfTwo().runTestCase(3);
+		//new PowersOfTwo().runTestCase(6);
 	}
 
 	public void runTestCase(int nbr) {
@@ -51,8 +100,15 @@ public class PowersOfTwo {
 				checkOutput(count(new long[] {1,32,1,16,32}), 18, 3); break;
 			}
 			case 4 : {
-				checkOutput(count(new long[] {1048576L,1073741824L,549755813888L,70368744177664L,4398046511104L,262144L,1048576L,2097152L,8796093022208L,  1048576L,1048576L,35184372088832L,2097152L,256L,256L,256L,262144L,1048576L,1048576L,70368744177664L,262144L,1048576L}), 18432, 4); break;
+                                     long[] ttt={2l, 4l, 8l, 16l, 32l, 64l, 128l, 256l, 512l, 1024l, 2048l, 4096l, 8192l, 16384l, 32768l, 65536l, 131072l, 262144l, 524288l, 1048576l, 2097152l, 4194304l, 8388608l, 16777216l, 33554432l, 67108864l, 134217728l, 268435456l, 536870912l, 1073741824l, 2147483648l, 4294967296l, 8589934592l, 17179869184l, 34359738368l, 68719476736l, 137438953472l, 274877906944l, 549755813888l, 1099511627776l, 2199023255552l, 4398046511104l, 8796093022208l, 17592186044416l, 35184372088832l, 70368744177664l, 140737488355328l, 281474976710656l, 562949953421312l, 1125899906842624l};
+				checkOutput(count(ttt), 1125899906842624l, 4); break;
 			}
+                        case 6: {
+                                    long[] ttt={2l, 8l, 32l, 16384l, 262144l, 262144l, 524288l, 1048576l, 2097152l, 2097152l, 2097152l, 4194304l, 4194304l, 8388608l, 536870912l, 2147483648l, 2147483648l, 2147483648l, 2147483648l, 2147483648l, 4294967296l, 4294967296l, 4294967296l, 4294967296l, 4294967296l, 274877906944l, 274877906944l, 8796093022208l, 17592186044416l, 17592186044416l, 17592186044416l, 35184372088832l, 35184372088832l, 281474976710656l, 562949953421312l, 562949953421312l, 562949953421312l};
+                                    checkOutput(count_1(ttt), 19070976, 5);
+                                    checkOutput(count(ttt), 19070976, 5);
+                                    break;
+                        }
 		}
 	}
 	final void checkOutput(int mine, int them, int nbr) {
