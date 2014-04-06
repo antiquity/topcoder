@@ -1,117 +1,113 @@
 import java.util.*;
-import java.util.regex.*;
-import java.text.*;
-import java.math.*;
-import java.awt.geom.*;
-import java.util.*;
 
-public class TaroFriends {
-    public int getNumber_1(int[] co, int X) {
-        Arrays.sort(co);
-        int N = co.length;
-        int md = co[N-1]-co[0];
-        if(X>=md) return md;
-        int l=Math.min(co[0]+X, co[N-1]-X),
-            r=Math.max(co[0]+X, co[N-1]-X);
-        int tl,tr;
-        ArrayList<Integer> rem = new ArrayList<Integer>();
-        int oS=Integer.MAX_VALUE;
-        while(N!=oS && N>0){
-            for(int i=0; i<N; i++){
-                tl = co[i]-X;
-                tr = co[i]+X;
-                if(tr<l){
-                    l=tr;
-                    System.out.print("1r");
-                }else if(tr<=r){
-                    System.out.print("2r");
-                    continue;
-                }else{
-                    if(tl<l){
-                        if(l-tl<tr-r){
-                            System.out.print("1l");
-                            l=tl;
-                        }else if(l-tl==tr-r){
-                            System.out.print("o");
-                            rem.add(co[i]);
-                        }else{
-                            r=tr;
-                            System.out.print("3r");
-                        }
-                    }else if(tl<=r){
-                        System.out.print("2l");
-                        continue;
-                    }else{
-                        System.out.print("3l");
-                        r=tl;
-                    }
-                }
+public class PowersOfTwo {
+    int[] table = new int[52];
+    public long count_1(long[] powers) {
+        ArrayList<Long> sPoswers = new ArrayList<Long>(powers.length);
+        for (long p : powers) sPoswers.add(p);
+        Collections.sort(sPoswers);
+        long max = 0;
+        HashSet<Long> current = new HashSet<Long>();
+        long total = 1;
+        current.add(0l);
+        Long last = null;
+        for (Long p : sPoswers) {
+            if (p != last && last != null && p > max) {
+                total *= current.size();
+                current = new HashSet<Long>();
+                current.add(0l);
             }
-            oS=N;
-            N=rem.size();
-            System.out.println(N);
-            if(N>0){
-                co=new int[N];
-                for(int i=0; i<N; i++) co[i]=rem.get(i);
-                rem.clear();
-            }
+
+            HashSet<Long> newVals = new HashSet<Long>();
+            for (Long val : current)
+                newVals.add(val + p);
+            current.addAll(newVals);
+
+            max += p;
+            last = p;
         }
-        if(N>0) r=co[0]+X;
-        return r-l;
+        total *= (current.size() != 0 ? current.size() : 1);
+        return total;
     }
-    public int getNumber(int[] co, int X) {
-        Arrays.sort(co);
-        System.out.println(Arrays.toString(co));
-        int res = co[co.length - 1] - co[0];
-        int ans=0;
-        for (int toRight = 0; toRight + 1 < co.length; ++toRight) {
-            int left = Math.min(co[0] + X, co[toRight + 1] - X);
-            int right = Math.max(co[toRight] + X, co[co.length - 1] - X);
-            if(right-left<=res){
-                res=right-left;
-                ans=toRight;
+
+    public long count(long[] powers) {
+        //println("powers: " + Arrays.toString(powers));
+        Arrays.fill(table,0);
+        int d=0;
+        long max=0;
+        for(int i=0; i<powers.length; i++){
+            d=0;
+            while(powers[i]!=1){
+                powers[i]/=2;
+                d++;
             }
-            //res = Math.min(res, right - left);
+            table[d]++;
         }
-        System.out.println(ans);
-        return res;
+        //println("table:  " + Arrays.toString(Arrays.copyOf(table,d+1)));
+        int i=0,j;
+        long ans=1;
+        HashSet<Long> set = new HashSet<Long>();
+        while(i<table.length){
+            max=table[i]; j=i;
+            set.clear(); set.add(0l);
+            while((1l<<(j-i))<=max && j<table.length){
+                //System.out.format("(%d,%d): ",i,j);
+                //System.out.print(set);
+                HashSet<Long> temp=new HashSet<Long>();
+                for(long l:set)
+                    for(int k=1; k<=table[j]; k++)
+                        temp.add(l+k*(1l<<(j-i)));
+                set.addAll(temp);
+                //System.out.println(" -> " + set);
+                if(j>i) max=max+table[j]*(1l<<(j-i));
+                j++;
+            }
+            if(table[i]==0) j++;
+            ans*=set.size();
+            i=j;
+        }
+        return ans;
     }
+
 // BEGIN CUT HERE
+    void println(Object o) { System.out.println(o); }
+    void print (Object o) {System.out.print(o); }
+    void println() {System.out.println(); }
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new TaroFriends().runTestCase(6);
-                //new TaroFriends().runTestCase(0);
-		//new TaroFriends().runTestCase(1);
-		//new TaroFriends().runTestCase(2);
-		//new TaroFriends().runTestCase(3);
-		//new TaroFriends().runTestCase(4);
-		//new TaroFriends().runTestCase(5);
+		new PowersOfTwo().runTestCase(4);
+		//System.out.println(new PowersOfTwo().count_1(new long[]{1,1,1,1,1,2,2,2,2,2}));
+		//System.out.println(new PowersOfTwo().count(new long[]{1,1,1,1,1,2,2,2,2,2}));
+		//new PowersOfTwo().runTestCase(0);
+		//new PowersOfTwo().runTestCase(1);
+		//new PowersOfTwo().runTestCase(2);
+		//new PowersOfTwo().runTestCase(3);
+		//new PowersOfTwo().runTestCase(6);
 	}
 
 	public void runTestCase(int nbr) {
 		switch(nbr) {
 			case 0 : {
-				checkOutput(getNumber_1(new int[] {-3, 0, 1}, 3), 3, 0); break;
+				checkOutput(count(new long[] {1,2}), 4, 0); break;
 			}
 			case 1 : {
-				checkOutput(getNumber(new int[] {4, 7, -7}, 5), 4, 1); break;
+				checkOutput(count(new long[] {1,1,1,1}), 5, 1); break;
 			}
 			case 2 : {
-				checkOutput(getNumber(new int[] {-100000000, 100000000}, 100000000), 0, 2); break;
+				checkOutput(count(new long[] {1,2,2,2,4,4,16}), 32, 2); break;
 			}
 			case 3 : {
-				checkOutput(getNumber(new int[] {3, 7, 4, 6, -10, 7, 10, 9, -5}, 7), 7, 3); break;
+				checkOutput(count(new long[] {1,32,1,16,32}), 18, 3); break;
 			}
 			case 4 : {
-				checkOutput(getNumber(new int[] {-4, 0, 4, 0}, 4), 4, 4); break;
+                                     long[] ttt={2l, 4l, 8l, 16l, 32l, 64l, 128l, 256l, 512l, 1024l, 2048l, 4096l, 8192l, 16384l, 32768l, 65536l, 131072l, 262144l, 524288l, 1048576l, 2097152l, 4194304l, 8388608l, 16777216l, 33554432l, 67108864l, 134217728l, 268435456l, 536870912l, 1073741824l, 2147483648l, 4294967296l, 8589934592l, 17179869184l, 34359738368l, 68719476736l, 137438953472l, 274877906944l, 549755813888l, 1099511627776l, 2199023255552l, 4398046511104l, 8796093022208l, 17592186044416l, 35184372088832l, 70368744177664l, 140737488355328l, 281474976710656l, 562949953421312l, 1125899906842624l};
+				checkOutput(count(ttt), 1125899906842624l, 4); break;
 			}
-			case 5 : {
-				checkOutput(getNumber(new int[] {7}, 0), 0, 5); break;
-                        }
-			case 6 : {
-				checkOutput(getNumber(new int[] {523, 740, -995, -723, 249, 309, 395, -385, 779, -842, 177, -150, 389, 409, 33, -98, 740, -452, 765, -650, 449, -219, -356, 513, 133, -761, 607, 560, -923, 810, -956, -92, -485, 211, 923, -124}, 818), 1471, 6);
-				checkOutput(getNumber_1(new int[] {523, 740, -995, -723, 249, 309, 395, -385, 779, -842, 177, -150, 389, 409, 33, -98, 740, -452, 765, -650, 449, -219, -356, 513, 133, -761, 607, 560, -923, 810, -956, -92, -485, 211, 923, -124}, 818), 1471, 6);
-                                break;
+                        case 6: {
+                                    long[] ttt={2l, 8l, 32l, 16384l, 262144l, 262144l, 524288l, 1048576l, 2097152l, 2097152l, 2097152l, 4194304l, 4194304l, 8388608l, 536870912l, 2147483648l, 2147483648l, 2147483648l, 2147483648l, 2147483648l, 4294967296l, 4294967296l, 4294967296l, 4294967296l, 4294967296l, 274877906944l, 274877906944l, 8796093022208l, 17592186044416l, 17592186044416l, 17592186044416l, 35184372088832l, 35184372088832l, 281474976710656l, 562949953421312l, 562949953421312l, 562949953421312l};
+                                    checkOutput(count_1(ttt), 19070976, 5);
+                                    checkOutput(count(ttt), 19070976, 5);
+                                    break;
                         }
 		}
 	}
