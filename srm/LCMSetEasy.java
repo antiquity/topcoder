@@ -32,11 +32,8 @@ public class LCMSetEasy {
     int lcm(int x, int y){
         return x/gcd(x,y)*y;
     }
-    int gcd(int x, int y){
-        int l = Math.max(x,y), s = Math.min(x,y);
-        if(s==0) return l;
-        else
-            return gcd(s,l%s);
+    int gcd(int l, int s){
+        return s==0 ? l : gcd(s,l%s);
     }
     public String include(int[] S, int x) {
         int y = 1;
@@ -53,14 +50,14 @@ public class LCMSetEasy {
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
 		new LCMSetEasy().runTestCase(8);
-		//new LCMSetEasy().runTestCase(7);
-                //new LCMSetEasy().runTestCase(0);
-		//new LCMSetEasy().runTestCase(1);
-		//new LCMSetEasy().runTestCase(2);
-		//new LCMSetEasy().runTestCase(3);
-		//new LCMSetEasy().runTestCase(4);
-		//new LCMSetEasy().runTestCase(5);
-		//new LCMSetEasy().runTestCase(6);
+		new LCMSetEasy().runTestCase(7);
+                new LCMSetEasy().runTestCase(0);
+		new LCMSetEasy().runTestCase(1);
+		new LCMSetEasy().runTestCase(2);
+		new LCMSetEasy().runTestCase(3);
+		new LCMSetEasy().runTestCase(4);
+		new LCMSetEasy().runTestCase(5);
+		new LCMSetEasy().runTestCase(6);
 	}
 
 	public void runTestCase(int nbr) {
