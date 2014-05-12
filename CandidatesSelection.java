@@ -1,68 +1,82 @@
 import java.util.*;
-import java.util.regex.*;
-import java.text.*;
-import java.math.*;
-import java.awt.geom.*;
-import java.util.*;
 
-public class EllysLamps {
-    public int getMin(String lamps) {
-        int N=lamps.length();
-        int[][][] dp = new int[lamps.length()][8][4];
-        int[] ll = new int[lamps.length()];
-        for(int i=0; i<lamps.length(); i++) ll[i]=(lamps.charAt(i)=='Y'? 1:0);
-        int co;
-        for(int j=0; j<8; j++){
-            for(int k=0;k<4;k++) dp[0][j][k]=0;
+public class CandidatesSelection {
+    int[][] score;
+    ArrayList<Integer> que;
+    public String possible(String[] score_, int[] result) {
+        int n=score.length;
+        int m=score[0].length();
+        score=new int[n][m];
+        for(int i=0; i<m; i++)
+            for(int j=0; j<n; j++)
+                score[j][i]=score_[j].charAt(i)-'A';
+        que = new ArrayList<Integer>();
+
+        for(int i=0; i<m; i++){
+            que.clear(); que.add(0); que.add(n-1);
+            check(i);
+            while(!que.isempty()){
+            }
         }
-        for(int i=1; i<N; i++){
-            for(int j=0; j<8; j++){
-                for(int k=0; k<4; k++){
-                        co=ll[i-1]+((j&2)>>1);
-                        co+=
-                            if((i>1 && (j&5) >0) || (i==1 && (j&1)>0) ) co=1;
-                        dp[i][j]=Math.min(dp[i-1][4|(j>>1)],dp[i-1][j>>1])+co;
+
+        return "Impossible";
+    }
+
+    boolean check(int i){
+        if(que.size()%2==1) System.error.println("Error: "+que.size());
+        int[] idx = new int[que.size()];
+        que.toArray(idx);
+        que.clear();
+        for(int k=0; k<idx.length/2; k++){
+            for(int j=idx[2*k]; j<idx[2*k+1]; j++){
+                if(score[result[j]][i]>score[result[j+1]][i]){
+                    continue outer;
+                }else{
+                    if((score[result[j]][i]==score[result[j+1]][i]) &&
+                        (j==idx[2*k] || score[result[j-1]][i]<score[result[j]][i])){
+                        que.add(j);
+                        if(j==idx[2*k+1]) que.add(j+1);
+                        }
+                    if((score[result[j]][i]<score[result[j+1]][i]) &&
+                            (j>idx[2*k] && score[result[j-1]][i]==score[result[j]][i]))
+                        que.add(j);
                 }
             }
         }
-        int res=Integer.MAX_VALUE;
-        for(int i=0; i<N; i++){ System.out.format("%2c,",lamps.charAt(i)); } System.out.println('\b');
-        for(int j=0; j<8; j++){
-            for(int i=0; i<N; i++){ System.out.format("%2d,",dp[i][j]); } System.out.println('\b');
-            if((j&2)>0) co=1;
-            else co=(ll[N-1]+(j%2))%2;
-            if(co+dp[N-1][j]<res)
-                res=co+dp[N-1][j];
-        }
-
-        return res;
     }
 // BEGIN CUT HERE
+    void println(Object o) { System.out.println(o); }
+    void print (Object o) {System.out.print(o); }
+    void println() {System.out.println(); }
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new EllysLamps().runTestCase(0);
-		new EllysLamps().runTestCase(1);
-		new EllysLamps().runTestCase(2);
-		new EllysLamps().runTestCase(3);
-		new EllysLamps().runTestCase(4);
+		new CandidatesSelection().runTestCase(0);
+		new CandidatesSelection().runTestCase(1);
+		new CandidatesSelection().runTestCase(2);
+		new CandidatesSelection().runTestCase(3);
+		new CandidatesSelection().runTestCase(4);
+		new CandidatesSelection().runTestCase(5);
 	}
 
 	public void runTestCase(int nbr) {
 		switch(nbr) {
 			case 0 : {
-				checkOutput(getMin("YNNYN"), 2, 0); break;
+				checkOutput(possible(new String[] {"CC", "AA", "BB"}, new int[] {1,2,0}), "Possible", 0); break;
 			}
 			case 1 : {
-				checkOutput(getMin("NNN"), 0, 1); break;
+				checkOutput(possible(new String[] {"BAB", "ABB", "AAB", "ABA"}, new int[] {2,0,1,3}), "Possible", 1); break;
 			}
 			case 2 : {
-				checkOutput(getMin("YY"), 0, 2); break;
+				checkOutput(possible(new String[] {"BAB", "ABB", "AAB", "ABA"}, new int[] {0, 1, 3, 2}), "Impossible", 2); break;
 			}
 			case 3 : {
-				checkOutput(getMin("YNYYYNNNY"), 3, 3); break;
+				checkOutput(possible(new String[] {"AAA", "ZZZ"}, new int[] {1, 0}), "Impossible", 3); break;
 			}
 			case 4 : {
-				checkOutput(getMin("YNYYYYNYNNYYNNNNNNYNYNYNYNNYNYYYNY"), 13, 4); break;
+				checkOutput(possible(new String[] {"ZZZ", "AAA"}, new int[] {0, 1}), "Possible", 4); break;
+			}
+			case 5 : {
+				checkOutput(possible(new String[] {"ZYYYYX","YXZYXY","ZZZZXX","XZXYYX","ZZZYYZ","ZZXXYZ","ZYZZXZ","XZYYZX"}, new int[] {3,7,1,0,2,5,6,4}), "Possible", 5); break;
 			}
 		}
 	}

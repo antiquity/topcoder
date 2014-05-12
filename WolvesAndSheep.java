@@ -1,68 +1,66 @@
 import java.util.*;
-import java.util.regex.*;
-import java.text.*;
-import java.math.*;
-import java.awt.geom.*;
-import java.util.*;
 
-public class EllysLamps {
-    public int getMin(String lamps) {
-        int N=lamps.length();
-        int[][][] dp = new int[lamps.length()][8][4];
-        int[] ll = new int[lamps.length()];
-        for(int i=0; i<lamps.length(); i++) ll[i]=(lamps.charAt(i)=='Y'? 1:0);
-        int co;
-        for(int j=0; j<8; j++){
-            for(int k=0;k<4;k++) dp[0][j][k]=0;
-        }
-        for(int i=1; i<N; i++){
-            for(int j=0; j<8; j++){
-                for(int k=0; k<4; k++){
-                        co=ll[i-1]+((j&2)>>1);
-                        co+=
-                            if((i>1 && (j&5) >0) || (i==1 && (j&1)>0) ) co=1;
-                        dp[i][j]=Math.min(dp[i-1][4|(j>>1)],dp[i-1][j>>1])+co;
-                }
+public class WolvesAndSheep {
+    char[][] field;
+    public int getmin(String[] field_) {
+        int r=field_.length, c=field_[0].length();
+        field=new char[r][c];
+        int[][] checked= new int[r][c];
+        for(int i=0; i<r; i++)
+            for(int j=0; j<c; j++){
+                field[i][j]=field_[i].charAt(j);
+                checked[i][j]=0;
             }
-        }
-        int res=Integer.MAX_VALUE;
-        for(int i=0; i<N; i++){ System.out.format("%2c,",lamps.charAt(i)); } System.out.println('\b');
-        for(int j=0; j<8; j++){
-            for(int i=0; i<N; i++){ System.out.format("%2d,",dp[i][j]); } System.out.println('\b');
-            if((j&2)>0) co=1;
-            else co=(ll[N-1]+(j%2))%2;
-            if(co+dp[N-1][j]<res)
-                res=co+dp[N-1][j];
+
+        int[] hori=new int[r-1], vert=new int[c-1];
+        Arrays.fill(hori,0); Arrays.fill(vert,0);
+
+        for(int i=0; i<r-1; i++){
+            for(int j=0; j<c; j++){
+            }
+
         }
 
-        return res;
+        
+
     }
 // BEGIN CUT HERE
+    void println(Object o) { System.out.println(o); }
+    void print (Object o) {System.out.print(o); }
+    void println() {System.out.println(); }
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new EllysLamps().runTestCase(0);
-		new EllysLamps().runTestCase(1);
-		new EllysLamps().runTestCase(2);
-		new EllysLamps().runTestCase(3);
-		new EllysLamps().runTestCase(4);
+		new WolvesAndSheep().runTestCase(0);
+		new WolvesAndSheep().runTestCase(1);
+		new WolvesAndSheep().runTestCase(2);
+		new WolvesAndSheep().runTestCase(3);
+		new WolvesAndSheep().runTestCase(4);
+		new WolvesAndSheep().runTestCase(5);
+		new WolvesAndSheep().runTestCase(6);
 	}
 
 	public void runTestCase(int nbr) {
 		switch(nbr) {
 			case 0 : {
-				checkOutput(getMin("YNNYN"), 2, 0); break;
+				checkOutput(getmin(new String[] {"W.WSS",  "WW.S.",  ".SSS.",  "SSS.S",  ".SS.S"}), 2, 0); break;
 			}
 			case 1 : {
-				checkOutput(getMin("NNN"), 0, 1); break;
+				checkOutput(getmin(new String[] {".....",  ".....",  "....."}), 0, 1); break;
 			}
 			case 2 : {
-				checkOutput(getMin("YY"), 0, 2); break;
+				checkOutput(getmin(new String[] {".SS",  "...",  "S..",  "W.W"}), 1, 2); break;
 			}
 			case 3 : {
-				checkOutput(getMin("YNYYYNNNY"), 3, 3); break;
+				checkOutput(getmin(new String[] {"WWWSWWSSWWW",  "WWSWW.SSWWW",  "WS.WSWWWWS."}), 10, 3); break;
 			}
 			case 4 : {
-				checkOutput(getMin("YNYYYYNYNNYYNNNNNNYNYNYNYNNYNYYYNY"), 13, 4); break;
+				checkOutput(getmin(new String[] {".W.S.W.W",  "W.W.S.W.",  ".S.S.W.W",  "S.S.S.W.",  ".S.W.W.S",  "S.S.W.W.",  ".W.W.W.S",  "W.W.S.S."}), 7, 4); break;
+			}
+			case 5 : {
+				checkOutput(getmin(new String[] {"W.SSWWSSSW.SS",  ".SSSSW.SSWWWW",  ".WWWWS.WSSWWS",  "SS.WSS..W.WWS",  "WSSS.SSWS.W.S",  "WSS.WS...WWWS",  "S.WW.S.SWWWSW",  "WSSSS.SSW...S",  "S.WWSW.WWSWSW",  ".WSSS.WWSWWWS",  "..SSSS.WWWSSS",  "SSWSWWS.W.SSW",  "S.WSWS..WSSS.",  "WS....W..WSS."}), 24, 5); break;
+			}
+			case 6 : {
+				checkOutput(getmin(new String[] {"WW..SS",  "WW..SS",  "......",  "......",  "SS..WW",  "SS..WW"}), 2, 6); break;
 			}
 		}
 	}

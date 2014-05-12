@@ -1,68 +1,87 @@
 import java.util.*;
-import java.util.regex.*;
-import java.text.*;
-import java.math.*;
-import java.awt.geom.*;
-import java.util.*;
 
-public class EllysLamps {
-    public int getMin(String lamps) {
-        int N=lamps.length();
-        int[][][] dp = new int[lamps.length()][8][4];
-        int[] ll = new int[lamps.length()];
-        for(int i=0; i<lamps.length(); i++) ll[i]=(lamps.charAt(i)=='Y'? 1:0);
-        int co;
-        for(int j=0; j<8; j++){
-            for(int k=0;k<4;k++) dp[0][j][k]=0;
+public class EagleInZoo {
+    double[] pO, pStay, pGoon;
+    int[] parent,nChild;
+    int N;
+    public double calc(int[] parent_, int K) {
+        double res=1;
+        N=parent_.length+1;
+
+        pO = new double[N];
+        pStay = new double[N];
+        parent = new int[N-1];
+        nChild = new int[N];
+
+        Arrays.fill(pO,0);
+
+        for(int i=0; i<N-1; i++){
+            parent[i]=parent_[i];
+            nChild[parent[i]]++;
         }
-        for(int i=1; i<N; i++){
-            for(int j=0; j<8; j++){
-                for(int k=0; k<4; k++){
-                        co=ll[i-1]+((j&2)>>1);
-                        co+=
-                            if((i>1 && (j&5) >0) || (i==1 && (j&1)>0) ) co=1;
-                        dp[i][j]=Math.min(dp[i-1][4|(j>>1)],dp[i-1][j>>1])+co;
-                }
-            }
-        }
-        int res=Integer.MAX_VALUE;
-        for(int i=0; i<N; i++){ System.out.format("%2c,",lamps.charAt(i)); } System.out.println('\b');
-        for(int j=0; j<8; j++){
-            for(int i=0; i<N; i++){ System.out.format("%2d,",dp[i][j]); } System.out.println('\b');
-            if((j&2)>0) co=1;
-            else co=(ll[N-1]+(j%2))%2;
-            if(co+dp[N-1][j]<res)
-                res=co+dp[N-1][j];
+
+        for(int i=0; i<K; i++){
+            Arrays.fill(pStay,0);
+            visit(0,1);
+            //System.out.format("i=%d:\n",i); System.out.println(Arrays.toString(pO)); System.out.println(Arrays.toString(pStay));
+            res=1;
+            for(int j=0; j<N; j++)
+                pO[j]+=(pStay[j]/res);
+            res=0;
+            for(int j=0; j<N; j++)
+                res+=pStay[j];
         }
 
         return res;
     }
+    void visit(int idx, double prob){
+        if(idx==0)
+            pStay[idx]=prob*(1-pO[idx]);
+        else{
+            pStay[idx]=prob*(1-pO[idx]-(1-pO[parent[idx-1]]));
+        }
+        if(pStay[idx]<prob){
+            for(int i=0; i<N-1; i++){
+                if(parent[i]==idx){
+                    visit(i+1,prob/nChild[idx]);
+                }
+            }
+        }
+    }
+
 // BEGIN CUT HERE
+    void println(Object o) { System.out.println(o); }
+    void print (Object o) {System.out.print(o); }
+    void println() {System.out.println(); }
 /** begin cut - don't modify this line*/
 	public static void main(String[] a) {
-		new EllysLamps().runTestCase(0);
-		new EllysLamps().runTestCase(1);
-		new EllysLamps().runTestCase(2);
-		new EllysLamps().runTestCase(3);
-		new EllysLamps().runTestCase(4);
+		new EagleInZoo().runTestCase(0);
+		new EagleInZoo().runTestCase(1);
+		new EagleInZoo().runTestCase(2);
+		new EagleInZoo().runTestCase(3);
+		new EagleInZoo().runTestCase(4);
+		new EagleInZoo().runTestCase(5);
 	}
 
 	public void runTestCase(int nbr) {
 		switch(nbr) {
 			case 0 : {
-				checkOutput(getMin("YNNYN"), 2, 0); break;
+				checkOutput(calc(new int[] {0,0}, 2), 1.0, 0); break;
 			}
 			case 1 : {
-				checkOutput(getMin("NNN"), 0, 1); break;
+				checkOutput(calc(new int[] {0,0}, 3), 0.5, 1); break;
 			}
 			case 2 : {
-				checkOutput(getMin("YY"), 0, 2); break;
+				checkOutput(calc(new int[] {0,1,0,3}, 4), 0.75, 2); break;
 			}
 			case 3 : {
-				checkOutput(getMin("YNYYYNNNY"), 3, 3); break;
+				checkOutput(calc(new int[] {0,0,1,1,2,4,4,4,5,5,6,6}, 20), 0.14595168754091617, 3); break;
 			}
 			case 4 : {
-				checkOutput(getMin("YNYYYYNYNNYYNNNNNNYNYNYNYNNYNYYYNY"), 13, 4); break;
+				checkOutput(calc(new int[] {0,1,2,3,2,1,1,7,0,9,10,11,12,13,14,15,16,17,18,14,9}, 24), 0.3272154791654077, 4); break;
+			}
+			case 5 : {
+				checkOutput(calc(new int[] {0,1,2,3,4,5,6,7,8,9,10}, 50), 0.0, 5); break;
 			}
 		}
 	}
