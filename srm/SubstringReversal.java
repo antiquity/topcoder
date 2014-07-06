@@ -8,18 +8,24 @@ public class SubstringReversal {
         return ret + S.substring(y+1);
     }
     public int[] solve(String S) {
-        String temp;
         String min = S;
         int[] ret = {0, 0};
         boolean set=false;
+        boolean newgood;
+        int m,n;
         for(int i=0; i< S.length(); i++){
             for(int j=i+1; j<S.length(); j++) if(S.charAt(j)<S.charAt(i)){
-                temp = reverse(S,i,j);
-                if(temp.compareTo(min) < 0){
-                    min = temp;
-                    ret[0] = i; ret[1]=j;
-                    set = true;
+                newgood=false;
+                if(!set){ ret = new int[]{i,j}; set = true; continue; }
+                for(int k=0; ret[1]-k>=ret[0] || j-k>=i; k++){
+                    m = ret[1]-k >= ret[0] ? ret[1]-k : ret[0]+k;
+                    n = j-k >= i ? j-k : i+k;
+                    if(S.charAt(m)!=S.charAt(n)){
+                        newgood=S.charAt(m)<S.charAt(n) ? false : true;
+                        break;
+                    }
                 }
+                if(newgood){ ret = new int[]{i,j}; set = true; }
             }
             if(set) break;
         }
