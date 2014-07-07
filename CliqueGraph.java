@@ -2,27 +2,27 @@ import java.util.*;
 
 public class CliqueGraph {
     public long calcSum(int N, int[] V, int[] sizes) {
-        Set<Integer> set = new HashSet<Integer>();
-        for(int i = 0; i < V.length; i++)
-            set.add(V[i]);
-        Integer[] v = new Integer[set.size()];
-        set.toArray(v);
-        Arrays.sort(v);
-
         int[] S = new int[sizes.length+1];
         S[0]=0;
         for(int i = 0; i < sizes.length; i++)
             S[i+1]=S[i]+sizes[i];
 
-        //System.out.println(Arrays.toString(V));
-        //System.out.println(Arrays.toString(v));
-        //System.out.println(Arrays.toString(S));
-
+        long ret = 0;
         Object[] cliq = new Object[sizes.length];
+
+        boolean[][] checked = new boolean[N][N];
+        for(int i=0; i<N; i++) Arrays.fill(checked[i], false);
+
+        Set<Integer> all = new Set<Integer>();
         for(int i = 0; i < sizes.length; i++){
             cliq[i] = new HashSet<Integer>();
             for(int j=S[i]; j<S[i+1]; j++)
                 ((Set)cliq[i]).add(V[j]);
+            for(int j=S[i]; j<S[i+1]; j++)
+                for(int k=j+1; k<S[i+1]; k++) if(!checked[V[k]][V[j]]){
+                    checked[V[j]][V[k]]=checked[V[k]][V[j]]=true;
+                    ret ++;
+                }
         }
 
         int[][] cliqMap = new int[sizes.length][sizes.length];
@@ -44,7 +44,6 @@ public class CliqueGraph {
                         cliqMap[j][i]=cliqMap[i][j];
                     }
 
-        long ret = 0;
         int dist;
         Object[] record = new Object[N];
         for(int i=0; i< N; i++){
@@ -53,12 +52,13 @@ public class CliqueGraph {
                 ((Set)record[i]).add(k);
         }
         for(int i=0; i< N; i++)
-            for(int j=i+1; j< N; j++){
+            for(int j=i+1; j< N; j++) if(!checked[i][j]){
                 dist = Integer.MAX_VALUE;
                 for(int k : (Set<Integer>)record[i])
                     for(int l : (Set<Integer>)record[j])
                         dist = Math.min(cliqMap[k][l],dist);
                 ret+=dist+1;
+                checked[j][i]=checked[i][j]=true;
             }
 
         return ret;
